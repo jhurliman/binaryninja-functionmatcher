@@ -214,18 +214,19 @@ void buildBasicBlockGraph(const BN::Ref<BN::Function> func, BasicBlockGraph& g) 
 }
 
 void buildDistanceMap(const BasicBlockGraph& g, BasicBlockVertexID start, BasicBlockDistanceMap& distances) {
-  using ColorMap = map<BasicBlockVertexID, boost::default_color_type>;
+  using namespace boost;
+  using ColorMap = map<BasicBlockVertexID, default_color_type>;
   
   ColorMap colorMap;
   boost::queue<BasicBlockVertexID> queue;
   
-  boost::breadth_first_visit(g, start, queue,
-    boost::make_bfs_visitor(
-      boost::record_distances(
-        boost::associative_property_map<BasicBlockDistanceMap>(distances), boost::on_tree_edge()
+  breadth_first_visit(g, start, queue,
+    make_bfs_visitor(
+      record_distances(
+        associative_property_map<BasicBlockDistanceMap>(distances), on_tree_edge()
       )
     ),
-    boost::associative_property_map<ColorMap>(colorMap)
+    associative_property_map<ColorMap>(colorMap)
   );
 }
 
